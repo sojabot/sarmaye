@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="bi bi-list-check text-info"></i>
+                مدیریت سوالات
+            </h2>
+            <p class="text-muted mb-0">{{ survey.title }}</p>
+            {% if survey.description %}
+            <small class="text-muted">{{ survey.description }}</small>
+            {% endif %}
+        </div>
+        <div>
+            <a href="{{ url_for('nazar.add_question', survey_id=survey.id) }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i>
+                افزودن سوال جدید
+            </a>
+            <a href="{{ url_for('nazar.manage_surveys') }}" class="btn btn-secondary">
+                بازگشت
+            </a>
+        </div>
+    </div>
+
+    {% if questions %}
+    <div class="row">
+        <div class="col-12">
+            {% for question in questions %}
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <span class="badge bg-primary me-2">{{ loop.index }}</span>
+                        سوال {{ loop.index }}
+                    </h5>
+                    <form method="POST" action="{{ url_for('nazar.delete_question', question_id=question.id) }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                onclick="return confirm('آیا از حذف این سوال اطمینان دارید؟')">
+                            <i class="bi bi-trash"></i>
+                            حذف سوال
+                        </button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <p class="card-text fs-5 mb-3">{{ question.question_text }}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="option-item mb-2 p-2 rounded bg-light">
+                                <strong class="text-primary">گزینه ۱:</strong> {{ question.option1 }}
+                            </div>
+                            <div class="option-item mb-2 p-2 rounded bg-light">
+                                <strong class="text-success">گزینه ۲:</strong> {{ question.option2 }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="option-item mb-2 p-2 rounded bg-light">
+                                <strong class="text-info">گزینه ۳:</strong> {{ question.option3 }}
+                            </div>
+                            <div class="option-item mb-2 p-2 rounded bg-light">
+                                <strong class="text-warning">گزینه ۴:</strong> {{ question.option4 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="empty-state">
+            <i class="bi bi-question-circle display-1 text-muted"></i>
+            <h3 class="text-muted mt-3">هنوز سوالی اضافه نکرده‌اید</h3>
+            <p class="text-muted">برای شروع، اولین سوال را به این نظرسنجی اضافه کنید</p>
+            <a href="{{ url_for('nazar.add_question', survey_id=survey.id) }}" class="btn btn-success btn-lg mt-3">
+                <i class="bi bi-plus-circle"></i>
+                افزودن اولین سوال
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

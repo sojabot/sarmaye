@@ -1,0 +1,255 @@
+/* استایل‌های سفارشی برای سیستم مدیریت سرمایه‌گذاری */
+
+/* استایل‌های عمومی */
+@font-face {
+    font-family: 'Vazir';
+    src: url('../Vazir.woff2') format('woff2'),
+        url('../Vazir.woff') format('woff'),
+        url('../Vazir.ttf') format('truetype'),
+        url('../Vazir.eot') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Vazir', 'Tanha', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    line-height: 1.6;
+}
+
+/* کارت‌های دارایی */
+.asset-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.asset-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* کارت خوش‌آمدگویی */
+.welcome-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* آیکون‌های دارایی */
+.asset-icon {
+    opacity: 0.8;
+}
+
+/* رنگ مخصوص بیت‌کوین */
+.text-orange {
+    color: #f7931a !important;
+}
+
+.bg-orange {
+    background-color: #f7931a !important;
+}
+
+/* جدول‌ها */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+/* دکمه‌ها */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* ناوبری */
+.navbar-brand {
+    font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* کارت‌ها */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: 1px solid #e3e6f0;
+    font-weight: 600;
+}
+
+/* فرم‌ها */
+.form-control,
+.form-select {
+    border-radius: 6px;
+    border: 1px solid #d1d3e2;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* بدج‌ها */
+.badge {
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* آلرت‌ها */
+.alert {
+    border: none;
+    border-radius: 8px;
+    border-right: 4px solid;
+}
+
+.alert-success {
+    border-right-color: #1cc88a;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    border-right-color: #e74a3b;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* صفحه لاگین */
+.login-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* نمایش تاریخ */
+.date-display {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* نمودار */
+.chart-container {
+    position: relative;
+}
+
+/* انیمیشن‌ها */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* پاسخگویی موبایل */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* استایل‌های خاص برای حالت تاریک */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+
+    .card-header {
+        background-color: #4a5568 !important;
+        color: #e2e8f0;
+        border-bottom-color: #4a5568;
+    }
+}
+
+/* استایل برای صفحات مدیریت */
+.admin-stats .card {
+    border-left: 4px solid;
+}
+
+.admin-stats .bg-primary {
+    border-left-color: #4e73df;
+}
+
+.admin-stats .bg-success {
+    border-left-color: #1cc88a;
+}
+
+.admin-stats .bg-warning {
+    border-left-color: #f6c23e;
+}
+
+.admin-stats .bg-info {
+    border-left-color: #36b9cc;
+}
+
+/* استایل‌های مربوط به انتخاب دارایی */
+.asset-selector {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.asset-selector:hover {
+    border-color: #4e73df;
+}
+
+.asset-option {
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.asset-option:hover {
+    background-color: #e9ecef;
+}
+
+.asset-option.selected {
+    background-color: #4e73df;
+    color: white;
+}
+
+/* استایل برای فرم اضافه کردن دارایی جدید */
+.new-asset-form {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}

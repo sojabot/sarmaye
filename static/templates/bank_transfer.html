@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرداخت کارت به کارت</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Vazir, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Vazir, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .bank-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .bank-card h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-number {
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            direction: ltr;
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .bank-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .instructions ol {
+            padding-right: 20px;
+            color: #856404;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-family: Vazir, sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                border-radius: 15px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .bank-card {
+                padding: 25px;
+            }
+
+            .card-number {
+                font-size: 1.5rem;
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 25px 15px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .bank-card {
+                padding: 20px;
+            }
+
+            .card-number {
+                font-size: 1.3rem;
+                letter-spacing: 2px;
+            }
+
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-university icon"></i>پرداخت کارت به کارت</h1>
+            <p>مبلغ را به حساب زیر واریز و رسید را ارسال کنید</p>
+        </div>
+
+        <div class="content">
+            <div class="bank-card">
+                <h3><i class="fas fa-credit-card icon"></i>شماره کارت مقصد</h3>
+                <div class="card-number">6037 9973 1901 4073</div>
+                <p>بانک - به نام گروه مالی دانیال نورانی</p>
+            </div>
+
+            <div class="bank-info">
+                <div class="info-item">
+                    <span class="info-label">بانک:</span>
+                    <span class="info-value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">به نام:</span>
+                    <span class="info-value">گروه مالی دانیال نورانی</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">شماره شبا:</span>
+                    <span class="info-value">IR 12 0340 0000 0012 3456 7890</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('message.send_message') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-right icon"></i> ارسال رسید پرداخت
+            </a>
+
+            <div class="instructions">
+                <h3><i class="fas fa-list-alt icon"></i>راهنمای پرداخت:</h3>
+                <ol>
+                    <li>مبلغ مورد نظر را به شماره کارت بالا واریز کنید</li>
+                    <li>از رسید پرداخت عکس واضح بگیرید</li>
+                    <li>رسید را از طریق پنجره کاربری ارسال کنید</li>
+                    <li>پس از تأیید توسط رابط مالی، موجودی حساب شما شارژ خواهد شد</li>
+                    <li>مدت زمان تأیید: حداکثر ۲۴ ساعت کاری</li>
+                </ol>
+            </div>
+
+            <a href="/payment_method" class="btn btn-primary">
+                <i class="fas fa-arrow-right icon"></i>بازگشت به انتخاب پرداخت
+            </a>
+
+            <a href="/user_portfolio" class="btn btn-secondary">
+                <i class="fas fa-home icon"></i>بازگشت به خانه
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

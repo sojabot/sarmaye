@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}سبد سرمایه‌گذاری{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-wallet2 text-primary me-2"></i>
+            سبد سرمایه‌گذاری
+        </h2>
+        <div class="text-muted small">
+            <i class="bi bi-clock me-1"></i>
+            آخرین به‌روزرسانی: {{ jdatetime.datetime.now().strftime('%Y/%m/%d - %H:%M') }}
+        </div>
+    </div>
+
+    <!-- کارت‌های سبد سرمایه‌گذاری -->
+    <div class="row">
+        {% for asset_type, data in portfolio_data.items() %}
+        <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-transparent border-0 pb-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title fw-bold text-dark mb-0">{{ asset_type }}</h5>
+                        <div class="asset-icon">
+                            {% if 'طلا' in asset_type %}
+                            <i class="bi bi-gem fs-2 text-warning"></i>
+                            {% elif 'دلار' in asset_type or 'USD' in asset_type %}
+                            <i class="bi bi-currency-dollar fs-2 text-success"></i>
+                            {% elif 'بیت' in asset_type or 'bitcoin' in asset_type|lower %}
+                            <i class="bi bi-currency-bitcoin fs-2 text-warning"></i>
+                            {% elif 'یورو' in asset_type or 'EUR' in asset_type %}
+                            <i class="bi bi-currency-euro fs-2 text-info"></i>
+                            {% else %}
+                            <i class="bi bi-coin fs-2 text-secondary"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- موجودی فعلی -->
+                    <div class="mb-4">
+                        <p class="text-muted small mb-1">موجودی فعلی</p>
+                        <h3 class="text-primary fw-bold">{{ "%.4f"|format(data.amount) }}</h3>
+                    </div>
+
+                    <!-- ارزش فعلی -->
+                    <div class="bg-light rounded-3 p-3 mb-3">
+                        <p class="text-muted small mb-1">ارزش فعلی سرمایه</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-success fw-bold mb-0">
+                                {{ "{:,.0f}".format(data.current_value) }}
+                            </h4>
+                            <span class="badge bg-success bg-opacity-10 text-success fs-6">
+                                {{ data.unit }}
+                            </span>
+                        </div>
+                    </div>
+                    <!-- ############################# -->
+                    <div class="bg-light rounded-3 p-3 mb-3">
+                        <p class="text-muted small mb-1">{% if data.khk >= 0 %}سود{% else %}زیان{% endif %}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="fw-bold mb-0 {% if data.khk >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                {{ "{:,.0f}".format(data.khk) }}
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- ############################# -->
+                    <!-- اطلاعات قیمت واحد -->
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span>قیمت هر واحد:</span>
+                        <span>
+                            {% if data.amount > 0 %}
+                            {{ "{:,.0f}".format(data.current_value / data.amount) }} {{ data.unit }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <div class="d-grid">
+                        <a href="{{ url_for('investment_history', asset_type=asset_type) }}"
+                            class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-clock-history me-1"></i>
+                            مشاهده تاریخچه معاملات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- حالت خالی -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="empty-state">
+                        <i class="bi bi-wallet2 fs-1 text-muted opacity-50"></i>
+                        <h4 class="text-muted mt-3 fw-normal">سبد سرمایه‌گذاری خالی است</h4>
+                        <p class="text-muted mb-4">هنوز هیچ سرمایه‌ای برای شما ثبت نشده است</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- خلاصه کل سبد -->
+    {% if portfolio_data %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>
+                        خلاصه کل سبد سرمایه‌گذاری
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3">
+                                <p class="text-muted mb-1">تعداد انواع سرمایه</p>
+                                <h3 class="text-primary fw-bold">{{ portfolio_data|length }}</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3">
+                                <p class="text-muted mb-1">ارزش کل سبد</p>
+                                <h3 class="text-success fw-bold">
+                                    {{ "{:,.0f}".format(portfolio_data.values()|sum(attribute='current_value')) }}
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3">
+                                <p class="text-muted mb-1">میانگین قیمت</p>
+                                <h3 class="text-info fw-bold">
+                                    {% set total_value = portfolio_data.values()|sum(attribute='current_value') %}
+                                    {% set total_amount = portfolio_data.values()|sum(attribute='amount') %}
+                                    {% if total_amount > 0 %}
+                                    {{ "{:,.0f}".format(total_value / total_amount) }}
+                                    {% else %}
+                                    ۰
+                                    {% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .asset-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .asset-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .empty-state {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // افزودن انیمیشن به کارت‌ها
+        const cards = document.querySelectorAll('.asset-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('animate__animated', 'animate__fadeInUp');
+        });
+    });
+</script>
+{% endblock %}

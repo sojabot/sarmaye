@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>مدیریت کارت‌ها و شبا</h2>
+    
+    <!-- فرم افزودن کارت جدید -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>افزودن کارت/شبا جدید</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('add_shaba') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="shaba" class="form-label">شماره شبا</label>
+                            <input type="text" class="form-control" id="shaba" name="shaba" 
+                                   placeholder="IR..." maxlength="26">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="card_number" class="form-label">شماره کارت</label>
+                            <input type="text" class="form-control" id="card_number" name="card_number" 
+                                   placeholder="6037..." maxlength="16">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="tozihat" class="form-label">توضیحات (اختیاری)</label>
+                    <textarea class="form-control" id="tozihat" name="tozihat" rows="2" 
+                              placeholder="مثلاً: حساب قرض الحسنه..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">ثبت کارت</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- لیست کارت‌ها -->
+    <div class="card">
+        <div class="card-header">
+            <h5>کارت‌های ثبت شده</h5>
+        </div>
+        <div class="card-body">
+            {% if shabas %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>شماره شبا</th>
+                            <th>شماره کارت</th>
+                            <th>توضیحات</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shaba in shabas %}
+                        <tr>
+                            <td>{{ shaba.shaba or '-' }}</td>
+                            <td>{{ shaba.card_number or '-' }}</td>
+                            <td>{{ shaba.tozihat or '-' }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('delete_shaba', shaba_id=shaba.id) }}" 
+                                      onsubmit="return confirm('آیا از حذف این کارت مطمئنید؟')">
+                                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">هیچ کارتی ثبت نشده است.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

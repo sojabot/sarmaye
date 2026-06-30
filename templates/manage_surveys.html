@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-gear text-primary"></i>
+            مدیریت نظرسنجی‌ها
+        </h2>
+        <a href="{{ url_for('nazar.new_survey') }}" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle"></i>
+            ایجاد نظرسنجی جدید
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if surveys %}
+    <div class="row">
+        {% for survey in surveys %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 text-truncate">{{ survey.title }}</h5>
+                    <span class="badge bg-{{ 'success' if survey.is_active else 'secondary' }}">
+                        {{ 'فعال' if survey.is_active else 'غیرفعال' }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ survey.description|default('بدون توضیحات', true)|truncate(100) }}</p>
+                    
+                    <div class="survey-info">
+                        <small class="text-muted d-block">
+                            <i class="bi bi-calendar"></i>
+                            ایجاد: {{ survey.created_at.strftime('%Y/%m/%d') }}
+                        </small>
+                        <small class="text-muted d-block">
+                            <i class="bi bi-question-circle"></i>
+                            سوالات: {{ survey.questions|length }}
+                        </small>
+                        <small class="text-muted d-block">
+                            <i class="bi bi-people"></i>
+                            شرکت‌کنندگان: {{ get_survey_participants_count(survey.id) }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group w-100" role="group">
+                        <a href="{{ url_for('nazar.manage_survey', survey_id=survey.id) }}" 
+                           class="btn btn-outline-primary" title="مدیریت سوالات">
+                            <i class="bi bi-list-check"></i>
+                        </a>
+                        <a href="{{ url_for('nazar.survey_results', survey_id=survey.id) }}" 
+                           class="btn btn-outline-info" title="نتایج">
+                            <i class="bi bi-graph-up"></i>
+                        </a>
+                         <a href="{{ url_for('nazar.user_answers', survey_id=survey.id) }}" 
+       class="btn btn-outline-info" title="پاسخ کاربران">
+        <i class="bi bi-people"></i>
+    </a>
+                        <a href="{{ url_for('nazar.survey_detail', survey_id=survey.id) }}" 
+                           class="btn btn-outline-success" title="پیش‌نمایش">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <form method="POST" action="{{ url_for('nazar.toggle_survey', survey_id=survey.id) }}" class="d-inline">
+                            <input type="hidden" name="activate" value="{{ 'false' if survey.is_active else 'true' }}">
+                            <button type="submit" class="btn btn-{{ 'warning' if survey.is_active else 'success' }}" 
+                                    title="{{ 'غیرفعال' if survey.is_active else 'فعال' }}">
+                                <i class="bi bi-{{ 'pause' if survey.is_active else 'play' }}"></i>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('nazar.delete_survey', survey_id=survey.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger" 
+                                    onclick="return confirm('آیا از حذف این نظرسنجی اطمینان دارید؟')"
+                                    title="حذف">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="empty-state">
+            <i class="bi bi-clipboard-x display-1 text-muted"></i>
+            <h3 class="text-muted mt-3">هنوز نظرسنجی‌ای ایجاد نکرده‌اید</h3>
+            <p class="text-muted">برای ایجاد اولین نظرسنجی، روی دکمه زیر کلیک کنید</p>
+            <a href="{{ url_for('nazar.new_survey') }}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-plus-circle"></i>
+                ایجاد اولین نظرسنجی
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

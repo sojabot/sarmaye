@@ -1,0 +1,164 @@
+{% extends "2base.html" %}
+
+{% block title %}مدیریت پیام‌ها{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>
+        <i class="fas fa-cog me-2"></i>
+        مدیریت پیام‌ها
+    </h4>
+    
+    <div class="d-flex gap-2">
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" 
+                    data-bs-toggle="dropdown">
+                <i class="fas fa-filter me-1"></i>
+                فیلتر بر اساس وضعیت
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('message.admin_messages', status='all') }}">همه</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('message.admin_messages', status='در انتظار بررسی') }}">در انتظار بررسی</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('message.admin_messages', status='بررسی شده') }}">بررسی شده</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for message in messages %}
+    <div class="col-12 mb-3">
+        <div class="card message-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h6 class="card-title">
+                            {% if message.text %}
+                                {{ message.text[:100] }}{% if message.text|length > 100 %}...{% endif %}
+                            {% else %}
+                                پیام بدون متن
+                            {% endif %}
+                        </h6>
+                        
+                        <div class="d-flex flex-wrap gap-2 mt-2 mb-3">
+                            <span class="badge {% if message.position == 'در انتظار بررسی' %}status-pending{% else %}status-reviewed{% endif %}">
+                                {{ message.position }}
+                            </span>
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>
+                                کاربر: {{ message.user.username if message.user else 'نامشخص' }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ message.created_at.strftime('%Y/%m/%d - %H:%M') }}
+                            </small>
+                            {% if message.link %}
+                                <a href="{{ message.link }}" target="_blank" class="text-primary text-decoration-none">
+                                    <i class="fas fa-download me-1"></i>
+                                    دانلود فایل
+                                </a>
+                            {% endif %}
+                        </div>
+                        
+                        {% if not message.response %}
+                        <form class="response-form" data-message-id="{{ message.id }}">
+                            <div class="mb-3">
+                                <label for="response{{ message.id }}" class="form-label">پاسخ به کاربر</label>
+                                <textarea class="form-control" id="response{{ message.id }}" name="response" 
+                                          rows="3" placeholder="پاسخ خود را اینجا بنویسید..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="position{{ message.id }}" class="form-label">تغییر وضعیت</label>
+                                <select class="form-select" id="position{{ message.id }}" name="position">
+                                    <option value="بررسی شده">بررسی شده</option>
+                                    <option value="در انتظار بررسی">در انتظار بررسی</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-check me-1"></i>
+                                ثبت پاسخ
+                            </button>
+                        </form>
+                        {% else %}
+                        <div class="p-3 bg-light rounded">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong>پاسخ شما:</strong>
+                                <span class="badge bg-success">{{ message.position }}</span>
+                            </div>
+                            <p class="mb-2">{{ message.response }}</p>
+                            {% if message.responded_at %}
+                            <small class="text-muted">
+                                پاسخ داده شده در: {{ message.responded_at.strftime('%Y/%m/%d - %H:%M') }}
+                            </small>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item text-danger" 
+                                   href="{{ url_for('message.delete_message', message_id=message.id )}}"
+                                   onclick="return confirm('آیا از حذف این پیام مطمئن هستید؟')">
+                                    <i class="fas fa-trash me-1"></i>
+                                    حذف
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card text-center py-5">
+            <div class="card-body">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">هیچ پیامی یافت نشد</h5>
+                <p class="text-muted">هیچ پیامی برای نمایش وجود ندارد</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const responseForms = document.querySelectorAll('.response-form');
+    
+    responseForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const messageId = this.dataset.messageId;
+            const formData = new FormData(this);
+            
+            fetch(`/admin/respond_message/${messageId}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('خطا در ارسال پاسخ');
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

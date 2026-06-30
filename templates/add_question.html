@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-question-circle"></i>
+                        افزودن سوال جدید - {{ survey.title }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-4">
+                            <label for="question_text" class="form-label fw-bold">
+                                {{ form.question_text.label }}
+                            </label>
+                            {{ form.question_text(class="form-control", rows="3", placeholder="متن سوال را وارد کنید") }}
+                            {% if form.question_text.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.question_text.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="option1" class="form-label fw-bold">
+                                        {{ form.option1.label }}
+                                    </label>
+                                    {{ form.option1(class="form-control", placeholder="گزینه اول") }}
+                                    {% if form.option1.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.option1.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="option2" class="form-label fw-bold">
+                                        {{ form.option2.label }}
+                                    </label>
+                                    {{ form.option2(class="form-control", placeholder="گزینه دوم") }}
+                                    {% if form.option2.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.option2.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="option3" class="form-label fw-bold">
+                                        {{ form.option3.label }}
+                                    </label>
+                                    {{ form.option3(class="form-control", placeholder="گزینه سوم") }}
+                                    {% if form.option3.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.option3.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="option4" class="form-label fw-bold">
+                                        {{ form.option4.label }}
+                                    </label>
+                                    {{ form.option4(class="form-control", placeholder="گزینه چهارم") }}
+                                    {% if form.option4.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.option4.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            {{ form.submit(class="btn btn-warning btn-lg") }}
+                            <a href="{{ url_for('nazar.manage_survey', survey_id=survey.id) }}" class="btn btn-secondary btn-lg">بازگشت</a>
+                            <a href="{{ url_for('nazar.survey_results', survey_id=survey.id) }}" class="btn btn-info btn-lg">مشاهده نتایج</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if survey.questions %}
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-list-check"></i>
+                        سوالات موجود ({{ survey.questions|length }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for question in survey.questions|sort(attribute='order') %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">سوال {{ loop.index }}: {{ question.question_text }}</h6>
+                                    <small class="text-muted">
+                                        گزینه‌ها: 
+                                        <span class="badge bg-primary">۱) {{ question.option1 }}</span>
+                                        <span class="badge bg-success">۲) {{ question.option2 }}</span>
+                                        <span class="badge bg-info">۳) {{ question.option3 }}</span>
+                                        <span class="badge bg-warning">۴) {{ question.option4 }}</span>
+                                    </small>
+                                </div>
+                                <form method="POST" action="{{ url_for('nazar.delete_question', question_id=question.id) }}" class="ms-2">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('آیا از حذف این سوال اطمینان دارید؟')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

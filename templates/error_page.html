@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %} خطای سیستمی | مشکلی پیش آمده {% endblock %}
+
+{% block content %}
+<div class="container py-5 my-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-4 p-md-5 text-center">
+
+                    <!-- آیکون خطا با انیمیشن آرام -->
+                    <div class="mb-4">
+                        <div class="display-1 text-warning">
+                            <i class="bi bi-emoji-frown"></i>
+                        </div>
+                    </div>
+
+                    <!-- کد خطا -->
+                    <h1 class="display-4 fw-bold text-secondary mb-2"></h1>
+                    <p class="text-muted mb-4">خطای در ارتباط با پردازشگر مرکزی</p>
+
+                    <!-- عنوان اصلی -->
+                    <h2 class="h3 mb-3 text-dark">مشکلی پیش آمده!</h2>
+
+                    <p>ممکن است به حداکثر تلاش برای یک دقیقه رسیده باشید . لطفا دقایقی دیگر تلاش کنید</p>
+
+
+
+                    <!-- دکمه‌های اقدام -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+
+                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                            <i class="bi bi-house me-2"></i>
+                            صفحه اصلی
+                        </a>
+
+                    </div>
+
+                    <!-- پیام دلگرم‌کننده برای برنامه‌نویس -->
+                    <div class="mt-5 pt-3 border-top">
+
+                        <p class="text-muted small mt-2">
+                            <i class="bi bi-github me-1"></i>
+                            خطا در لاگ ثبت شد | کد: ERR-500-{{ range(1000, 9999) | random }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // یک پیام دوستانه در کنسول برای دیباگ
+    console.log("%c🌿 آرامش خود را حفظ کن. هر خطا فرصتی برای بهبود کد است.", "color: #0d6efd; font-size: 14px; font-weight: bold;");
+    console.log("نوع خطا: 500 (Internal Server Error)");
+
+    // اگر نیاز به گزارش خودکار خطا به سرور دارید (اختیاری)
+    // می‌توانید این بخش را فعال کنید
+    /*
+    fetch('/api/log-client-error', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            error: '500 page viewed',
+            url: window.location.href,
+            timestamp: new Date().toISOString()
+        })
+    }).catch(e => console.log('Report failed:', e));
+    */
+</script>
+{% endblock %}

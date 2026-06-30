@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-clipboard-question"></i>
+                        {{ survey.title }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if survey.description %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        {{ survey.description }}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('nazar.answer_survey', survey_id=survey.id) }}">
+                        {% for question in questions %}
+                        <div class="question-card card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">سوال {{ loop.index }} از {{ questions|length }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="question-text fw-bold mb-3">{{ question.question_text }}</p>
+                                
+                                <div class="options-list">
+                                    {% for i in range(1, 5) %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" 
+                                               name="question_{{ question.id }}" 
+                                               id="question_{{ question.id }}_{{ i }}" 
+                                               value="{{ i }}"
+                                               {% if user_answers.get(question.id) == i %}checked{% endif %}
+                                               required>
+                                        <label class="form-check-label w-100" for="question_{{ question.id }}_{{ i }}">
+                                            <span class="badge bg-secondary me-2">{{ i }}</span>
+                                            {{ question['option' ~ i] }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('nazar.nazars') }}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-right"></i>
+                                بازگشت
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i>
+                                ثبت پاسخ‌ها
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.question-card {
+    border-right: 4px solid #0d6efd;
+}
+
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.form-check-label {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.form-check-label:hover {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}

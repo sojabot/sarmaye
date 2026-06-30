@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-person-lines-fill text-primary"></i>
+            پاسخ‌های {{ user.full_name }}
+        </h2>
+        <div>
+            <a href="{{ url_for('nazar.user_answers', survey_id=survey.id) }}" class="btn btn-info">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به لیست کاربران
+            </a>
+            <a href="{{ url_for('nazar.manage_surveys') }}" class="btn btn-secondary">
+                مدیریت نظرسنجی‌ها
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-info-circle"></i>
+                اطلاعات کاربر و نظرسنجی
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>اطلاعات کاربر:</h6>
+                    <p class="mb-1"><strong>نام کامل:</strong> {{ user.full_name }}</p>
+                    <p class="mb-1"><strong>نام کاربری:</strong> {{ user.username }}</p>
+                    {% if user.phone %}
+                    <p class="mb-1"><strong>تلفن:</strong> {{ user.phone }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h6>اطلاعات نظرسنجی:</h6>
+                    <p class="mb-1"><strong>عنوان:</strong> {{ survey.title }}</p>
+                    <p class="mb-1"><strong>تعداد سوالات:</strong> {{ questions|length }}</p>
+                    <p class="mb-1"><strong>تعداد پاسخ‌ها:</strong> {{ user_answers|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user_answers %}
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-check-circle"></i>
+                پاسخ‌های ثبت شده
+            </h5>
+        </div>
+        <div class="card-body">
+            {% for question in questions %}
+            <div class="question-card card mb-3">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        سوال {{ loop.index }} از {{ questions|length }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="fw-bold text-dark mb-3">{{ question.question_text }}</p>
+                    
+                    {% set answer = user_answers.get(question.id) %}
+                    {% if answer %}
+                    <div class="alert alert-success">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>پاسخ انتخاب شده:</strong>
+                                <span class="badge bg-success fs-6 me-2">گزینه {{ answer.selected_option }}</span>
+                                {{ answer.option_text }}
+                            </div>
+                            <div class="text-muted">
+                                <small>
+                                    <i class="bi bi-clock"></i>
+                                    {{ answer.answered_at.strftime('%Y/%m/%d - %H:%M') }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        کاربر به این سوال پاسخ نداده است.
+                    </div>
+                    {% endif %}
+                    
+                    <div class="options-list mt-3">
+                        <h6 class="text-muted mb-2">تمام گزینه‌های این سوال:</h6>
+                        <div class="row">
+                            {% for i in range(1, 5) %}
+                            <div class="col-md-6 mb-2">
+                                <div class="option-item p-2 rounded {% if answer and answer.selected_option == i %}bg-success text-white{% else %}bg-light{% endif %}">
+                                    <strong>گزینه {{ i }}:</strong> {{ question['option' ~ i] }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="empty-state">
+            <i class="bi bi-person-x display-1 text-muted"></i>
+            <h3 class="text-muted mt-3">این کاربر هنوز پاسخی ثبت نکرده است</h3>
+            <p class="text-muted">کاربر {{ user.full_name }} تاکنون در این نظرسنجی شرکت نکرده است.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.question-card {
+    border-right: 4px solid #198754;
+}
+
+.option-item {
+    transition: all 0.3s ease;
+}
+
+.alert-success {
+    border-right: 4px solid #198754;
+}
+
+.alert-warning {
+    border-right: 4px solid #ffc107;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">پاسخ به درخواست برداشت</h5>
+
+        </div>
+        <form method="POST" action="{{ url_for('update_bardasht', bardasht_id=bardasht.id) }}">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">وضعیت:</label>
+                    <select class="form-select" name="position" required>
+                        <option value="در انتظار بررسی" {% if bardasht.position=='در انتظار بررسی' %}selected{% endif
+                            %}>در
+                            انتظار بررسی</option>
+                        <option value="تایید شده" {% if bardasht.position=='تایید شده' %}selected{% endif %}>تایید شده
+                        </option>
+                        <option value="رد شده" {% if bardasht.position=='رد شده' %}selected{% endif %}>رد شده</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">پاسخ ادمین:</label>
+                    <textarea class="form-control" name="response_admin" rows="3"
+                        placeholder="پاسخ خود را وارد کنید...">{{ bardasht.response_admin or '' }}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ url_for('admin_bardasht') }}" type="button">انصراف</a>
+                <button type="submit" class="btn btn-primary">ثبت پاسخ</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

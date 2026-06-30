@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="bi bi-clipboard-check text-success"></i>
+                نظرسنجی‌های فعال
+            </h2>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if surveys %}
+    <div class="row">
+        {% for survey in surveys %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">{{ survey.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ survey.description|default('بدون توضیحات', true) }}</p>
+                    
+                    <div class="survey-meta">
+                        <small class="text-muted">
+                            <i class="bi bi-question-circle"></i>
+                            {{ survey.questions|length }} سوال
+                        </small>
+                        <br>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar"></i>
+                            {{ survey.created_at.strftime('%Y/%m/%d') }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ url_for('nazar.survey_detail', survey_id=survey.id) }}" 
+                       class="btn btn-success w-100">
+                        <i class="bi bi-pencil-square"></i>
+                        شرکت در نظرسنجی
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="empty-state">
+            <i class="bi bi-clipboard-x display-1 text-muted"></i>
+            <h3 class="text-muted mt-3">نظرسنجی فعالی وجود ندارد</h3>
+            <p class="text-muted">در حال حاضر هیچ نظرسنجی فعالی برای شرکت موجود نیست.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد کاربری{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="welcome-card bg-gradient-primary text-white rounded p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3>
+                        <i class="bi bi-gem"></i>
+                        خوش آمدید، {{ current_user.full_name }}
+                    </h3>
+                    <p class="mb-0">این پنجره برای مدیریت و مشاهده سبد سرمایه‌گذاری شماست</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="date-display">
+                        <i class="bi bi-calendar-check"></i>
+                        {{ jdatetime.datetime.now().strftime('%Y/%m/%d') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-wallet2 fs-1 text-primary"></i>
+                <h5 class="card-title mt-3">سبد سرمایه‌گذاری</h5>
+                <p class="card-text">مشاهده و مدیریت دارایی‌های شما</p>
+                <a href="{{ url_for('user_portfolio') }}" class="btn btn-primary">
+                    مشاهده سبد
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-graph-up fs-1 text-info"></i>
+                <h5 class="card-title mt-3">افزایش سرمایه</h5>
+                <p class="card-text">افزودن سرمایه در سبد سرمایه گزاری</p>
+                <a href="{{ url_for('payment_method') }}" class="btn btn-success">
+                    افزایش
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-clock-history fs-1 text-success"></i>
+                <h5 class="card-title mt-3">پیام ها</h5>
+                <p class="card-text">مشاهده پیام های پشتیبانی</p>
+                <a href="{{ url_for('message.my_messages') }}" class="btn btn-success">
+                    مشاهده
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- آمار سریع -->
+<!-- <div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-lightning-charge"></i>
+                    آمار سریع
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-primary" id="totalAssets">0</h4>
+                            <small class="text-muted">تعداد دارایی‌ها</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-success" id="totalValue">0</h4>
+                            <small class="text-muted">ارزش کل (تومان)</small>
+                        </div>
+                    </div> -->
+<!--  <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-warning" id="lastTransaction">-</h4>
+                            <small class="text-muted">آخرین تراکنش</small>
+                        </div>
+                    </div> -->
+<!-- <div class="col-md-3">
+                        <h4 class="text-info" id="activeInvestments">0</h4>
+                        <small class="text-muted">سرمایه‌گذاری فعال</small>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // بارگذاری آمار از API
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/user/investments')
+            .then(response => response.json())
+            .then(data => {
+                // محاسبه آمار
+                const assetTypes = new Set(data.map(inv => inv.asset_type));
+                document.getElementById('totalAssets').textContent = assetTypes.size;
+                document.getElementById('activeInvestments').textContent = data.length;
+
+                if (data.length > 0) {
+                    const lastTrans = data[0];
+                    document.getElementById('lastTransaction').textContent =
+                        lastTrans.shamsi_date;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    });
+</script>
+{% endblock %}

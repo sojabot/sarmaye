@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>مدیریت درخواست‌های برداشت</h2>
+
+    <!-- فیلتر وضعیت -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label for="position" class="form-label">فیلتر بر اساس وضعیت:</label>
+                    <select class="form-select" id="position" name="position" onchange="this.form.submit()">
+                        <option value="all" {% if request.args.get('position')=='all' %}selected{% endif %}>همه</option>
+                        <option value="در انتظار بررسی" {% if request.args.get('position')=='در انتظار بررسی'
+                            %}selected{% endif %}>در انتظار بررسی</option>
+                        <option value="تایید شده" {% if request.args.get('position')=='تایید شده' %}selected{% endif %}>
+                            تایید شده</option>
+                        <option value="رد شده" {% if request.args.get('position')=='رد شده' %}selected{% endif %}>رد شده
+                        </option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- لیست درخواست‌ها -->
+    <div class="card">
+        <div class="card-body">
+            {% if bardashts %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>کاربر</th>
+                            <th>تاریخ</th>
+                            <th>نوع دارایی</th>
+                            <th>مقدار</th>
+                            <th>کارت مقصد</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bardasht in bardashts %}
+                        <tr>
+                            <td>{{ bardasht.name }}</td>
+                            <td>{{ bardasht.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ bardasht.asset_type }}</td>
+                            <td>{{ bardasht.amount }}</td>
+                            <td>{{ bardasht.card_number or bardasht.shaba }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if bardasht.position == 'تایید شده' %}bg-success
+                                    {% elif bardasht.position == 'رد شده' %}bg-danger
+                                    {% else %}bg-warning{% endif %}">
+                                    {{ bardasht.position }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('update_bardasht', bardasht_id=bardasht.id) }}" type="button"
+                                    class="btn btn-primary btn-sm">
+                                    پاسخ ios
+                                </a>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#responseModal{{ bardasht.id }}">
+                                    پاسخ
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Modal برای پاسخ -->
+                        <div class="modal fade" id="responseModal{{ bardasht.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">پاسخ به درخواست برداشت</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <form method="POST"
+                                        action="{{ url_for('update_bardasht', bardasht_id=bardasht.id) }}">
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">وضعیت:</label>
+                                                <select class="form-select" name="position" required>
+                                                    <option value="در انتظار بررسی" {% if
+                                                        bardasht.position=='در انتظار بررسی' %}selected{% endif %}>در
+                                                        انتظار بررسی</option>
+                                                    <option value="تایید شده" {% if bardasht.position=='تایید شده'
+                                                        %}selected{% endif %}>تایید شده</option>
+                                                    <option value="رد شده" {% if bardasht.position=='رد شده'
+                                                        %}selected{% endif %}>رد شده</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">پاسخ ادمین:</label>
+                                                <textarea class="form-control" name="response_admin" rows="3"
+                                                    placeholder="پاسخ خود را وارد کنید...">{{ bardasht.response_admin or '' }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">انصراف</button>
+                                            <button type="submit" class="btn btn-primary">ثبت پاسخ</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">هیچ درخواست برداشتی یافت نشد.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

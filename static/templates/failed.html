@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرداخت ناموفق</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Vazir, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Vazir, sans-serif;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .header i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .error-message {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .error-message h3 {
+            color: #dc3545;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .error-message p {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .suggestions {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: right;
+        }
+
+        .suggestions h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .suggestions ul {
+            list-style-type: none;
+            padding-right: 0;
+        }
+
+        .suggestions li {
+            color: #856404;
+            margin-bottom: 10px;
+            padding-right: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .suggestions li:before {
+            content: "•";
+            color: #856404;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-family: Vazir, sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                border-radius: 15px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .header {
+                padding: 30px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.7rem;
+            }
+
+            .header i {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 25px 15px;
+            }
+
+            .content {
+                padding: 25px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header i {
+                font-size: 3rem;
+            }
+
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-times-circle"></i>
+            <h1>پرداخت ناموفق</h1>
+            <p>متأسفانه پرداخت شما با مشکل مواجه شد</p>
+        </div>
+
+        <div class="content">
+            <div class="error-message">
+                <h3><i class="fas fa-exclamation-triangle icon"></i>خطا در پرداخت</h3>
+                <p>عملیات پرداخت با مشکل مواجه شده است. لطفاً مجدداً تلاش کنید.</p>
+                <p>در صورت کسر مبلغ از حساب، طی ۷۲ ساعت به حساب شما بازمی‌گردد.</p>
+            </div>
+
+            <div class="suggestions">
+                <h4><i class="fas fa-lightbulb icon"></i>راهکارهای پیشنهادی:</h4>
+                <ul>
+                    <li>بررسی موجودی حساب بانکی</li>
+                    <li>بررسی صحت اطلاعات کارت بانکی</li>
+                    <li>اتصال به اینترنت پرسرعت</li>
+                    <li>تلاش مجدد پس از چند دقیقه</li>
+                    <li>تماس با پشتیبانی در صورت تکرار خطا</li>
+                </ul>
+            </div>
+
+            <a href="/payment_method" class="btn btn-primary">
+                <i class="fas fa-redo icon"></i>تلاش مجدد پرداخت
+            </a>
+
+            <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-home icon"></i>بازگشت به خانه
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

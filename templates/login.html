@@ -1,0 +1,546 @@
+{% extends "base.html" %}
+
+{% block title %}ورود به سیستم{% endblock %}
+
+{% block content %}
+<style>
+    /* پس‌زمینه پویا با گرادیان متحرک */
+    .login-page {
+        min-height: 100vh;
+        background: linear-gradient(-45deg, #667eea, #764ba2, #223dda, #4facfe);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: -20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    /* حباب‌های شناور */
+    .bubbles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .bubble {
+        position: absolute;
+        bottom: -100px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        animation: floatUp 10s infinite ease-in-out;
+        backdrop-filter: blur(2px);
+    }
+
+    .bubble:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        left: 10%;
+        animation-duration: 8s;
+        animation-delay: 0s;
+    }
+
+    .bubble:nth-child(2) {
+        width: 120px;
+        height: 120px;
+        left: 25%;
+        animation-duration: 10s;
+        animation-delay: 1s;
+    }
+
+    .bubble:nth-child(3) {
+        width: 60px;
+        height: 60px;
+        left: 45%;
+        animation-duration: 7s;
+        animation-delay: 2s;
+    }
+
+    .bubble:nth-child(4) {
+        width: 100px;
+        height: 100px;
+        left: 65%;
+        animation-duration: 9s;
+        animation-delay: 0.5s;
+    }
+
+    .bubble:nth-child(5) {
+        width: 70px;
+        height: 70px;
+        left: 80%;
+        animation-duration: 11s;
+        animation-delay: 1.5s;
+    }
+
+    .bubble:nth-child(6) {
+        width: 90px;
+        height: 90px;
+        left: 90%;
+        animation-duration: 8.5s;
+        animation-delay: 2.5s;
+    }
+
+    .bubble:nth-child(7) {
+        width: 50px;
+        height: 50px;
+        left: 15%;
+        animation-duration: 9.5s;
+        animation-delay: 3s;
+    }
+
+    .bubble:nth-child(8) {
+        width: 110px;
+        height: 110px;
+        left: 55%;
+        animation-duration: 7.5s;
+        animation-delay: 1.8s;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(0) scale(0.5) rotate(0deg);
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: translateY(-110vh) scale(1.2) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    /* ذرات نورانی */
+    .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: particleFloat 20s linear infinite;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes particleFloat {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    /* کارت ورود */
+    .login-card {
+        position: relative;
+        z-index: 1;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.8s ease-out;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        max-width: 450px;
+        width: 100%;
+    }
+
+    .login-card:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 35px 90px rgba(0, 0, 0, 0.4);
+    }
+
+    @keyframes slideUp {
+        0% {
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* هدر کارت */
+    .card-header-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px 20px 0 0;
+        padding: 30px 20px;
+        position: relative;
+        overflow: hidden;
+        border-bottom: none;
+    }
+
+    .card-header-gradient::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+        animation: shimmer 4s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+            transform: translateX(100%) rotate(45deg);
+        }
+    }
+
+    .card-header-gradient h4 {
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header-gradient i {
+        animation: iconPulse 2s infinite;
+    }
+
+    @keyframes iconPulse {
+
+        0%,
+        100% {
+            transform: scale(1) rotate(0deg);
+        }
+
+        50% {
+            transform: scale(1.2) rotate(-5deg);
+        }
+    }
+
+    /* فیلدهای ورودی */
+    .form-group-custom {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .form-group-custom .form-control {
+        border: 2px solid #e1e5eb;
+        border-radius: 12px;
+        padding: 12px 15px 12px 45px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        height: 54px;
+        font-size: 15px;
+    }
+
+    .form-group-custom .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: scale(1.02);
+        background: #ffffff;
+    }
+
+    .form-group-custom .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #667eea;
+        font-size: 18px;
+        z-index: 10;
+        transition: all 0.3s ease;
+    }
+
+    .form-group-custom .form-control:focus+.input-icon {
+        color: #764ba2;
+        transform: translateY(-50%) scale(1.2);
+    }
+
+    .form-group-custom label {
+        position: absolute;
+        top: -10px;
+        left: 45px;
+        background: white;
+        padding: 0 8px;
+        font-size: 12px;
+        color: #667eea;
+        font-weight: 600;
+        z-index: 5;
+        border-radius: 4px;
+    }
+
+    /* دکمه ورود */
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        width: 100%;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-login:active {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .btn-login::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        transform: rotate(45deg);
+        animation: btnShine 3s infinite;
+    }
+
+    @keyframes btnShine {
+        0% {
+            transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+            transform: translateX(100%) rotate(45deg);
+        }
+    }
+
+    .btn-login i {
+        margin-right: 8px;
+        animation: iconPulse 2s infinite;
+    }
+
+    /* فوتر کارت */
+    .card-footer-custom {
+        background: rgba(0, 0, 0, 0.02);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 18px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .card-footer-custom small {
+        color: #8892b0;
+        font-size: 13px;
+    }
+
+    .card-footer-custom small i {
+        color: #667eea;
+        animation: iconPulse 2s infinite;
+    }
+
+    /* انیمیشن ورود فیلدها */
+    .form-group-custom {
+        animation: inputSlide 0.6s ease-out both;
+    }
+
+    .form-group-custom:nth-child(1) {
+        animation-delay: 0.2s;
+    }
+
+    .form-group-custom:nth-child(2) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes inputSlide {
+        0% {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* ریسپانسیو */
+    @media (max-width: 576px) {
+        .login-card {
+            margin: 10px;
+        }
+
+        .form-group-custom .form-control {
+            font-size: 14px;
+            height: 48px;
+        }
+
+        .btn-login {
+            font-size: 15px;
+            padding: 12px;
+        }
+
+        .card-header-gradient {
+            padding: 20px 15px;
+        }
+
+        .card-header-gradient h4 {
+            font-size: 18px;
+        }
+    }
+
+
+    .container {
+        padding: 0;
+
+    }
+
+    .mt-4 {
+        margin-top: 0 !important;
+    }
+
+    .mt-5 {
+        margin-top: 0rem !important;
+        background-color: #7e89c486 !important;
+    }
+</style>
+
+<div class="login-page" style="padding: 0;">
+    <!-- حباب‌های شناور -->
+    <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- ذرات نورانی -->
+    <div class="particles" id="particles"></div>
+
+    <!-- کارت ورود -->
+    <div class="login-card">
+        <!-- هدر کارت -->
+        <div class="card-header-gradient text-white text-center">
+            <h4 class="mb-0">
+                <i class="bi bi-person-badge"></i>
+                ورود به سامانه
+            </h4>
+
+        </div>
+
+        <!-- بدنه کارت -->
+        <div class="card-body p-4">
+            <form method="POST" action="{{ url_for('login') }}">
+                <!-- فیلد نام کاربری -->
+                <div class="form-group-custom">
+                    <input type="text" class="form-control" id="username" name="username" required
+                        placeholder="نام کاربری خود را وارد کنید">
+                    <i class="bi bi-person input-icon"></i>
+                    <label for="username">نام کاربری</label>
+                </div>
+
+                <!-- فیلد رمز عبور -->
+                <div class="form-group-custom">
+                    <input type="password" class="form-control" id="password" name="password" required
+                        placeholder="رمز عبور خود را وارد کنید">
+                    <i class="bi bi-lock input-icon"></i>
+                    <label for="password">رمز عبور</label>
+                </div>
+
+                <!-- دکمه ورود -->
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    ورود به سیستم
+                </button>
+            </form>
+        </div>
+
+        <!-- فوتر کارت -->
+        <div class="card-footer-custom text-center">
+            <small>
+                <i class="bi bi-info-circle"></i>
+                برای دسترسی به سیستم با مدیر تماس بگیرید
+            </small>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ایجاد ذرات نورانی با جاوااسکریپت
+    document.addEventListener('DOMContentLoaded', function () {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+
+            particle.style.left = Math.random() * 100 + '%';
+
+            const duration = Math.random() * 20 + 15;
+            const delay = Math.random() * 10;
+            particle.style.animationDuration = duration + 's';
+            particle.style.animationDelay = delay + 's';
+
+            particle.style.opacity = Math.random() * 0.5 + 0.2;
+
+            particlesContainer.appendChild(particle);
+        }
+    });
+</script>
+{% endblock %}

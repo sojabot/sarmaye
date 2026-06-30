@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت سرمایه‌های {{ user.full_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="bi bi-person-gear text-primary"></i>
+        مدیریت سرمایه‌های {{ user.full_name }}
+    </h2>
+    <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right"></i>
+        بازگشت
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-circle"></i>
+                    افزودن سرمایه جدید
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="investmentForm">
+                    <!-- انتخاب از دارایی‌های موجود -->
+                    <div class="mb-3">
+                        <label class="form-label">انتخاب از دارایی‌های موجود</label>
+                        <select class="form-select" id="existing_assets" onchange="fillAssetDetails()">
+                            <option value="">یک دارایی انتخاب کنید</option>
+                            {% for asset in assets %}
+                            <option value="{{ asset.id }}" data-type="{{ asset.asset_type }}"
+                                data-name="{{ asset.asset_name }}" data-price="{{ asset.price_for_unit or '' }}">
+                                {{ asset.asset_type }} - {{ asset.asset_name }}
+                                {% if asset.price_for_unit %}
+                                ({{ "{:,.0f}".format(asset.price_for_unit) }} تومان)
+                                {% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">نوع دارایی</label>
+                        <input type="text" class="form-control" id="asset_type" name="asset_type"
+                            placeholder="مثال: طلا" required>
+                    </div>
+
+                    <!--   <div class="mb-3">
+                        <label class="form-label">نام دارایی</label>
+                        <input type="text" class="form-control" id="asset_name" name="asset_name"
+                            placeholder="مثال: سکه بهار آزادی" required>
+                    </div>
+ -->
+                    <div class="mb-3">
+                        <label class="form-label">مقدار</label>
+                        <input type="number" step="0.001" class="form-control" name="amount" placeholder="مثال: 2.5"
+                            required>
+                    </div>
+
+                    <!--  <div class="mb-3">
+                        <label class="form-label">قیمت هر واحد (اختیاری)</label>
+                        <input type="number" class="form-control" id="price_per_unit" name="price_per_unit"
+                            placeholder="به تومان">
+                    </div>
+ -->
+                    <div class="mb-3">
+                        <label class="form-label">نوع تراکنش</label>
+                        <select class="form-select" name="transaction_type" required>
+                            <option value="buy">خرید/افزایش</option>
+                            <option value="sell">فروش/کاهش</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">توضیحات (اختیاری)</label>
+                        <textarea class="form-control" name="notes" rows="3"
+                            placeholder="توضیحات مربوط به این تراکنش..."></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i>
+                            ثبت تراکنش
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <!-- فرم اضافه کردن دارایی جدید -->
+                <div class="card bg-light">
+                    <!-- <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-plus-lg"></i>
+                            اضافه کردن دارایی جدید به سیستم
+                        </h6>
+                    </div> -->
+                    <div class="card-body">
+                        <form method="POST" id="newAssetForm">
+                            <input type="hidden" name="new_asset" value="true">
+
+                            <div class="mb-2">
+                                <label class="form-label">نوع دارایی</label>
+                                <input type="text" class="form-control" name="new_asset_type" placeholder="مثال: طلا"
+                                    required>
+                            </div>
+
+                            <!--  <div class="mb-2">
+                                <label class="form-label">نام دارایی</label>
+                                <input type="text" class="form-control" name="new_asset_name" 
+                                       placeholder="مثال: سکه 1 گرمی" required>
+                            </div> -->
+
+                            <!--   <div class="mb-2">
+                                <label class="form-label">قیمت پیش‌فرض (اختیاری)</label>
+                                <input type="number" class="form-control" name="new_price_for_unit" 
+                                       placeholder="قیمت به تومان">
+                            </div> -->
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-plus-circle"></i>
+                                    اضافه کردن دارایی
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">تاریخچه سرمایه‌گذاری‌ها</h5>
+                <span class="badge bg-primary">{{ investments|length }} تراکنش</span>
+            </div>
+            <div class="card-body">
+                {% if investments %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>تاریخ</th>
+                                <th>نوع دارایی</th>
+                                <th>نام دارایی</th>
+                                <th>مقدار</th>
+                                <th>نوع</th>
+                                <th>توضیحات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inv in investments %}
+                            <tr>
+                                <td>
+                                    <small>{{ inv.shamsi_date }}</small>
+                                    <br>
+                                    <small class="text-muted">{{ inv.shamsi_time }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if inv.asset_type == 'طلا' %}bg-warning text-dark
+                                        {% elif inv.asset_type == 'دلار' %}bg-success
+                                        {% elif inv.asset_type == 'بیت‌کوین' %}bg-orange
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ inv.asset_type }}
+                                    </span>
+                                </td>
+                                <td>{{ inv.asset_name }}</td>
+                                <td>
+                                    <span
+                                        class="{% if inv.transaction_type == 'buy' %}text-success{% else %}text-danger{% endif %}">
+                                        {{ inv.amount }}
+                                        {% if inv.transaction_type == 'buy' %}
+                                        <i class="bi bi-arrow-up-circle text-success"></i>
+                                        {% else %}
+                                        <i class="bi bi-arrow-down-circle text-danger"></i>
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if inv.transaction_type == 'buy' %}
+                                    <span class="badge bg-success">افزایش</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">کاهش</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ inv.notes or '-' }}</small>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-wallet2 fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">هنوز سرمایه‌ای ثبت نشده است</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- خلاصه سبد سرمایه‌گذاری -->
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-pie-chart"></i>
+                    خلاصه سبد سرمایه‌گذاری
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% set portfolio = {} %}
+                    {% for inv in investments %}
+                    {% if inv.asset_type not in portfolio %}
+                    {% set _ = portfolio.update({inv.asset_type: 0}) %}
+                    {% endif %}
+                    {% if inv.transaction_type == 'buy' %}
+                    {% set _ = portfolio.update({inv.asset_type: portfolio[inv.asset_type] + inv.amount}) %}
+                    {% else %}
+                    {% set _ = portfolio.update({inv.asset_type: portfolio[inv.asset_type] - inv.amount}) %}
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for asset, amount in portfolio.items() %}
+                    <div class="col-md-6 mb-2">
+                        <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                            <span>{{ asset }}</span>
+                            <span class="badge bg-primary">{{ "%.3f"|format(amount) }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- لیست دارایی‌های موجود در سیستم -->
+        <!-- <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-check"></i>
+                    دارایی‌های موجود در سیستم
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for asset in assets %}
+                    <div class="col-md-6 col-lg-4 mb-2">
+                        <div class="border rounded p-2 bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ asset.asset_type }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ asset.asset_name }}</small>
+                                </div>
+                                {% if asset.price_for_unit %}
+                                <span class="badge bg-success">
+                                    {{ "{:,.0f}".format(asset.price_for_unit) }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function fillAssetDetails() {
+        const select = document.getElementById('existing_assets');
+        const selectedOption = select.options[select.selectedIndex];
+
+        if (selectedOption.value) {
+            document.getElementById('asset_type').value = selectedOption.getAttribute('data-type');
+            document.getElementById('asset_name').value = selectedOption.getAttribute('data-name');
+
+            const price = selectedOption.getAttribute('data-price');
+            document.getElementById('price_per_unit').value = price || '';
+        }
+    }
+
+    // مدیریت ارسال فرم‌ها
+    document.addEventListener('DOMContentLoaded', function () {
+        const newAssetForm = document.getElementById('newAssetForm');
+        if (newAssetForm) {
+            newAssetForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                this.submit();
+            });
+        }
+
+        const investmentForm = document.getElementById('investmentForm');
+        if (investmentForm) {
+            investmentForm.addEventListener('submit', function (e) {
+                // اعتبارسنجی فرم
+                const assetType = document.getElementById('asset_type').value;
+                const assetName = document.getElementById('asset_name').value;
+
+                if (!assetType || !assetName) {
+                    e.preventDefault();
+                    alert('لطفاً نوع دارایی و نام دارایی را وارد کنید');
+                    return false;
+                }
+            });
+        }
+    });
+
+    // نمایش/پنهان کردن فرم اضافه کردن دارایی جدید
+    function toggleNewAssetForm() {
+        const form = document.getElementById('newAssetForm');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+</script>
+
+<style>
+    .bg-orange {
+        background-color: #f7931a !important;
+    }
+
+    #newAssetForm {
+        display: none;
+    }
+
+    .asset-item {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .asset-item:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

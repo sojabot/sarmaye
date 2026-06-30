@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}تاریخچه {{ asset_type }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="bi bi-clock-history text-primary"></i>
+        تاریخچه {{ asset_type }}
+    </h2>
+    <a href="{{ url_for('user_portfolio') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right"></i>
+        بازگشت به سبد
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">تمام تراکنش‌های {{ asset_type }}</h5>
+        <span class="badge bg-primary">{{ investments|length }} تراکنش</span>
+    </div>
+    <div class="card-body">
+        {% if investments %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>تاریخ و ساعت</th>
+                        <th>نام دارایی</th>
+                        <th>مقدار</th>
+                        <th>نوع تراکنش</th>
+                        <th>قیمت واحد</th>
+                        <th>ارزش کل</th>
+                        <th>توضیحات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inv in investments %}
+                    <tr>
+                        <td>
+                            <div>{{ inv.shamsi_date }}</div>
+                            <small class="text-muted">{{ inv.shamsi_time }}</small>
+                        </td>
+                        <td>{{ inv.asset_name }}</td>
+                        <td>
+                            <span class="fw-bold">{{ inv.amount }}</span>
+                        </td>
+                        <td>
+                            {% if inv.transaction_type == 'buy' %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-arrow-down-left"></i>
+                                خرید
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger">
+                                <i class="bi bi-arrow-up-right"></i>
+                                فروش
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if inv.price_per_unit %}
+                            {{ "{:,.0f}".format(inv.price_per_unit) }}
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if inv.price_per_unit %}
+                            <strong>{{ "{:,.0f}".format(inv.amount * inv.price_per_unit) }}</strong>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ inv.notes or 'بدون توضیح' }}</small>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-clock-history fs-1 text-muted"></i>
+            <h4 class="text-muted mt-3">تاریخچه‌ای یافت نشد</h4>
+            <p class="text-muted">هنوز تراکنشی برای {{ asset_type }} ثبت نشده است</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- آمار تراکنش‌ها -->
+{% if investments %}
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">خلاصه تراکنش‌ها</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h5 class="text-success">
+                                {{ investments|selectattr('transaction_type', 'equalto', 'buy')|list|length }}
+                            </h5>
+                            <small>تراکنش خرید</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h5 class="text-danger">
+                            {{ investments|selectattr('transaction_type', 'equalto', 'sell')|list|length }}
+                        </h5>
+                        <small>تراکنش فروش</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">آخرین به‌روزرسانی</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <h5 class="text-primary">
+                        {{ investments[0].shamsi_date if investments else '-' }}
+                    </h5>
+                    <small>آخرین تراکنش</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
