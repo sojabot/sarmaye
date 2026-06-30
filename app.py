@@ -89,8 +89,7 @@ def index():
         data = fetch_api_data()  # ✅ دریافت همزمان با timeout
     
     # حالا داده رو داری، می‌تونی استفاده کنی
-    if data:
-        print(f"Price: {data.get('sekkeh', 'N/A')}")
+ 
     
     if current_user.is_authenticated:
         if current_user.is_admin:
