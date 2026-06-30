@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 
 app.config['SECRET_KEY'] = 'yorsyb57$%W&*%^bvere'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:JXVSJvn9IxZMzpVNepf6vkt4@cho-oyu.liara.cloud:33291/loving_hugle'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Z5Q8aQg1yYytIKJb@services.irn13.chabokan.net:32061/loving_hugle'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 init_extensions(app)
