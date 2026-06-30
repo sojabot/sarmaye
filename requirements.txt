@@ -13,6 +13,7 @@ Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.2.2
 greenlet==3.2.4
+gunicorn==26.0.0
 idna==3.10
 itsdangerous==2.2.0
 jdatetime==4.1.1
@@ -33,5 +34,3 @@ urllib3==2.5.0
 waitress==3.0.2
 Werkzeug==2.3.7
 WTForms==3.2.1
-httpcore==1.0.9
-httpx==0.28.1
