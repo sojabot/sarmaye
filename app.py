@@ -46,38 +46,15 @@ def get_shamsi_datetime():
 cache = Cache(app)
 
 def fetch_api_data():
-    """دریافت داده از API و ذخیره در کش"""
-    
-      #  response = requests.get(
-       #     'http://api.navasan.tech/latest/?api_key=premts4574hRpl4xfqgf2WxfGzoU5wSc&item=sekkeh',
-        #    timeout=120
-        #)
-        #data = response.json()
-
-    url = 'http://api.navasan.tech/latest/?api_key=premts4574hRpl4xfqgf2WxfGzoU5wSc&item=sekkeh'
-    
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate',
-        'Connection': 'keep-alive',
-        'Cache-Control': 'no-cache'
-    }
-    
- 
+   
     response = requests.get(
-            url,
-            headers=headers,
-            timeout=60,
-            verify=False  # اگر SSL مشکل داشت
+            'http://api.navasan.tech/latest/?api_key=premts4574hRpl4xfqgf2WxfGzoU5wSc',
+            timeout=120
         )
-        
-        
-
+    data = response.json()
+    print(float(data['sekkeh']['value']),'HHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
     print(response, 'API Data Fetched$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
     return response
-   
 
 @app.route('/')
 def index():
