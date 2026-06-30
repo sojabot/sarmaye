@@ -34,3 +34,5 @@ urllib3==2.5.0
 waitress==3.0.2
 Werkzeug==2.3.7
 WTForms==3.2.1
+httpcore==1.0.9
+httpx==0.28.1
